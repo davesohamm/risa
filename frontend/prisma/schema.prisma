@@ -1,0 +1,32 @@
+// Define the datasource and generator if needed
+// Example using PostgreSQL as the datasource
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// Employee model
+model Employee {
+  id           Int       @id @default(autoincrement()) @map("EmployeeID")
+  firstName    String    @map("FirstName") @db.VarChar(50)
+  lastName     String    @map("LastName") @db.VarChar(50)
+  departmentId Int       @map("DepartmentID")
+  salary       Float     @map("Salary")
+  department   Department @relation(fields: [departmentId], references: [id])
+
+  @@map("Employees")
+}
+
+// Department model
+model Department {
+  id           Int        @id @default(autoincrement()) @map("DepartmentID")
+  departmentName String   @map("DepartmentName") @db.VarChar(50)
+  employees    Employee[]
+
+  @@map("Departments")
+}
