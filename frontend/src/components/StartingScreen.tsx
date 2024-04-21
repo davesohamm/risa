@@ -1,12 +1,12 @@
 import LoadingScreen from "@/components/LoadingSCreen";
 import { useDashboardGenerator } from "@/hooks/useDashboardGenerator";
-import { schema } from "@/pages";
 import { Fragment, useState } from "react";
 
 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
 export default function StartingScreen({ databaseSchema }: { databaseSchema: any }) {
-    const [tableName, setTableName] = useState('');
+    const [tableName, setTableName] = useState(databaseSchema[0].name);
     const { hasStarted, isLoading, generateDashboard, sqlQueries, chartConfigs, loadingCharts } = useDashboardGenerator(databaseSchema, tableName);
+    console.log({hasStarted, isLoading, sqlQueries, chartConfigs, loadingCharts});
     return (
         <div className="container p-5">
             {!hasStarted ? (
@@ -51,7 +51,7 @@ export default function StartingScreen({ databaseSchema }: { databaseSchema: any
                             type="button"
                             className="mt-6 p-3 rounded-md bg-gray-900 disabled:bg-indigo-700 hover:bg-gray-800 hover:text-white transition-colors shadow-sm shadow-indigo-100 text-indigo-50 font-semibold"
                         >
-                            Generate Dashboard
+                            Analyze 👀
                         </button>
                     </div>
                 </Fragment>

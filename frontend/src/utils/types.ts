@@ -4,8 +4,8 @@ export interface ColumnMetadata {
 }
 
 export interface TableMetadata {
-    table_name: string;
-    table_columns: ColumnMetadata[];
+    tableName: string;
+    tableColumns: ColumnMetadata[];
     amount_to_generate: number;
 }
 

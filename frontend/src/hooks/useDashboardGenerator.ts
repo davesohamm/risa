@@ -14,8 +14,10 @@ export const useDashboardGenerator = (databaseSchema: any, tableName: string) =>
     const generateDashboard = async () => {
         try {
             setHasStarted(true);
-            if (!databaseSchema.values.length) return;
-            console.log(tableName)
+            console.log({databaseSchema},"line number 100")
+            if (!databaseSchema.length) return;
+            const selectedTable = databaseSchema.find((table:any) => table.name === tableName);
+            console.log({selectedTable})
             setIsLoading(true);
             // two queries it will provide one will be sql queries and other will be natural language queries
             const queries = await fetch('api/query-generator', {
@@ -23,33 +25,37 @@ export const useDashboardGenerator = (databaseSchema: any, tableName: string) =>
                 body: JSON.stringify({
                     tableName: tableName,
                     // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-                    tableColumns: databaseSchema.values[0].fields.map((field: any) => {
+                    tableColumns: selectedTable.fields.map((field: any) => {
                         const parsed = JSON.parse(JSON.stringify(field));
                         return {
                             column: parsed.name,
                             type: parsed.type
                         }
-                    })
+                    }),
+                    amount_to_generate: 10
                 })
             });
             setIsLoading(false);
             if (queries.status === 200) {
                 const data = await queries.json();
+                console.log({data})
                 setSqlQueries(data);
                 console.log(queries);
                 // let's create charts from the data
                 setLoadingCharts(true);
-
+                console.log({sqlQueries})
                 // generate charts
                 
                 const chartConfiguration = await fetch('api/chart-generator', {
                     method: 'POST',
                     body: JSON.stringify({
-                        sqlQueries: sqlQueries,
+                        sqlQueries: data,
                         tableName: tableName
                     })
                 });
-                
+
+                const chartConfig = await chartConfiguration.json();
+                console.log({chartConfig})
                 setChartConfigs(chartConfiguration)
 
             }
